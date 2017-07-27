@@ -296,7 +296,7 @@
 			if( event.targetTouches.length >= 2 ) {
 				var p1 = event.targetTouches[0];
 				var p2 = event.targetTouches[1];
-				var zoomScale = Math.sqrt(Math.pow(p2.pageX - p1.pageX, 2) + Math.pow(p2.pageY - p1.pageY, 2)); // euclidian distance
+				var zoomScale = Math.sqrt(Math.pow(p2.clientX - p1.clientX, 2) + Math.pow(p2.clientY - p1.clientY, 2)); // euclidian distance
 
 				if( this.lastZoomScale ) {
 					zoom = zoomScale - this.lastZoomScale;
@@ -422,14 +422,14 @@
 				if ( this.momentum  )
 					this._destroyImpetus();
 
-				var x = ( e.targetTouches[0].pageX + e.targetTouches[1].pageX ) / 2;
-				var y = ( e.targetTouches[0].pageY + e.targetTouches[1].pageY ) / 2;
+				var x = ( e.targetTouches[0].clientX + e.targetTouches[1].clientX ) / 2;
+				var y = ( e.targetTouches[0].clientY + e.targetTouches[1].clientY ) / 2;
 				this.zoom( this._gesturePinchZoom(e), x, y );
 			}
 			else if(e.targetTouches.length == 1) {
 				if ( !this.momentum  ){
-					var relativeX = e.targetTouches[0].pageX - this.offeset.x;
-					var relativeY = e.targetTouches[0].pageY - this.offeset.y;
+					var relativeX = e.targetTouches[0].clientX - this.offeset.x;
+					var relativeY = e.targetTouches[0].clientY - this.offeset.y;
 					this.move(relativeX, relativeY);
 				}
 			}
@@ -440,26 +440,26 @@
 			// Check if touchend
 			if ( this.doubletap && !this.startZoom && e.changedTouches.length > 0 ){
 				var touch     = e.changedTouches[0]
-				var distance  = touch.pageX - (this.lastTouchPageX || 0);
+				var distance  = touch.clientX - (this.lastTouchClientX || 0);
 				var now       = new Date().getTime();
 				var lastTouch = this.lastTouchTime || now + 1 /** the first time this will make delta a negative number */;
 				var delta     = now - lastTouch;
 				if ( distance >= 0 && distance < this.threshold && delta > 0 && delta < 500 ){
 					this.lastTouchTime  = null;
-					this.lastTouchPageX = 0;
+					this.lastTouchClientX = 0;
 					this.startZoom      = true;
 					if ( this.zoomed ){
 						this.zoom(-400);
 					}else{
-						this.zoom(2000, touch.pageX - this.offeset.x, touch.pageY - this.offeset.y );
+						this.zoom(2000, touch.clientX - this.offeset.x, touch.clientY - this.offeset.y );
 					}
 				}else{
 					this.lastTouchTime = now;
-					this.lastTouchPageX = touch.pageX;
+					this.lastTouchClientX = touch.clientX;
 				}
 			}else{
 				this.lastTouchTime  = null;
-				this.lastTouchPageX = 0;
+				this.lastTouchClientX = 0;
 			}
 
 			if ( this.momentum ){
